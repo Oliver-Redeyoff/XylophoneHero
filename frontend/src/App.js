@@ -1,36 +1,71 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Camera from './components/Camera.js';
 import './App.css';
 import icon from './Assets/icon.png';
 import Menu from './Menu.js';
 import instruments, {instrumentTemplate} from './Instruments.js';
 
-function App() {
-  const [currentInstrument, selectInstrument] = useState(null);
-  console.log(currentInstrument);
-  const selectHandler = (name) => {
-    const newInstrument = instruments(name);
-    selectInstrument(newInstrument);
-  }
+// the vertical side bar was broken before I touched it - James
+class App extends React.Component {
+    constructor(self) {
+        super(self);
+        this.state = {
+            calib: false,
+            currentInstrument: null
+        }
+        this.callBackGetData = this.callBackGetData.bind(this);
+        this.selectInstrument = this.selectInstrument.bind(this);
 
-  return (
-    <div>
+    }
 
-      <div className="left">
-        <img src={icon} alt="Icon" />
-        <h1>Xylophone Hero</h1>
-      </div>
-      <Menu instruments={instrumentTemplate} selectInstrument={selectHandler} />
-      <div className="right">
-        <div className='cameraViewParent'>
-          <div className='cameraView'>
-            <Camera/>
-          </div>
-        </div>
-      </div>
+    setCalib() {
+        this.setState(
+            {calib: true}
+        )
+    }
 
-    </div>
-  );
-}
+    selectInstrument(name) {
+      const newInstrument = instruments(name, 0, 100, 0, 100);
+      this.setState({
+        currentInstrument: newInstrument
+      })
+    }
 
-export default App;
+    offsetFun() {
+        setTimeout(this.setCalib(), 50000)
+
+    }
+
+    callBackGetData(data) {
+        data.forEach((part) => {
+            if (part.part === "leftWrist" || part.part === "rightWrist") {
+                console.log("x position = " + part.position.x)
+                console.log("y position = " + part.position.y)
+            }
+        })
+        this.setState({calib: false})
+    }
+
+    render() {
+        return (
+            <div>
+                <div className="left">
+                    <img src={icon} alt="Icon"/>
+                    <h1> XylophoneHero </h1>
+                        <button className="calibButton" onClick={() => this.offsetFun()}> Calibrate </button>
+                        <Menu instruments={instrumentTemplate} selectInstrument={this.selectInstrument} />
+                </div>
+                <div className="right">
+                    <div className='cameraViewParent'>
+                        <div className='cameraView'>
+                            <Camera calib={this.state.calib} callBack={this.callBackGetData}/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        );
+      }
+    }
+
+    export default App;

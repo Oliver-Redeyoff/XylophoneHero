@@ -24,6 +24,9 @@ class PoseNet extends Component {
 
   constructor(props) {
     super(props, PoseNet.defaultProps)
+    this.state = {
+      calib : this.props.calib
+    }
   }
 
   getCanvas = elem => {
@@ -157,6 +160,10 @@ class PoseNet extends Component {
         canvasContext.restore()
       }
 
+      if(this.props.calib){
+        this.props.callBack(poses[0].keypoints);
+      }
+
       poses.forEach(({score, keypoints}) => {
         if (score >= minPoseConfidence) {
           if (showPoints) {
@@ -187,7 +194,7 @@ class PoseNet extends Component {
     return (
       <div>
         <div>
-          <video id="videoNoShow" playsInline ref={this.getVideo} style={{display: 'none'}} />
+          <video id="videoNoShow" playsInline ref={this.getVideo} style={{display: 'none', width: "100%"}} />
           <canvas className="webcam" ref={this.getCanvas} />
         </div>
       </div>
