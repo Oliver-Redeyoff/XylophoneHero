@@ -4,6 +4,7 @@ import * as posenet from '@tensorflow-models/posenet'
 
 
 class PoseNet extends Component {
+
   static defaultProps = {
     videoWidth: 900,
     videoHeight: 600,
@@ -21,7 +22,13 @@ class PoseNet extends Component {
     skeletonColor: '#ffadea',
     skeletonLineWidth: 6,
     loadingText: 'Loading...please be patient...'
-  }
+  };
+
+  static songs = [
+    [[1, 1], [1, 1], [2, 1], [3, 1], [4, 1]]
+  ];
+  static timeCount = 0;
+  static currentNotes = [];
 
   constructor(props) {
     super(props, PoseNet.defaultProps);
@@ -167,6 +174,33 @@ class PoseNet extends Component {
           }
         }
       });
+
+      if(this.props.isHero && this.props.currentInstrument != null) {
+
+        // if this is the beginning of the song, add first note
+        if (PoseNet.timeCount == 0){
+          PoseNet.currentNotes.push(
+            {
+              id: PoseNet.songs[this.props.songId][0][0],
+              x: this.props.currentInstrument.boxes[1].minX+10,
+              y: 0 //this.props.currentInstrument.boxes[PoseNet.songs[this.props.songId][0][0]].minY
+            })
+        } // else see if a new note should be added to the list
+        else {
+
+        }
+
+        PoseNet.currentNotes.forEach((note) => {
+          console.log(note);
+          canvasContext.rect(note.x, note.y, this.props.currentInstrument.boxes[1].maxX-20, 50);
+          canvasContext.stroke();
+          note.y += 5;
+        })
+
+        PoseNet.timeCount += 1;
+
+      }
+
       if (this.props.currentInstrument != null) {
         const leftWrist = poses[0].keypoints[9].position;
         const rightWrist = poses[0].keypoints[10].position;
@@ -191,7 +225,9 @@ class PoseNet extends Component {
             }
         });
       }
+
       requestAnimationFrame(findPoseDetectionFrame);
+
     };
     findPoseDetectionFrame()
   }
