@@ -4,6 +4,8 @@ import './App.css';
 import icon from './Assets/icon.png';
 import settingsIcon from './Assets/settingsIcon.png';
 import playIcon from './Assets/playIcon.png';
+import Menu from './Menu.js';
+import instruments, {instrumentTemplate} from './Instruments.js';
 
 // the vertical side bar was broken before I touched it - James
 class App extends React.Component {
@@ -11,9 +13,12 @@ class App extends React.Component {
         super(self);
         this.state = {
             calib: false,
+            currentInstrument: null,
             page: 1
         }
         this.callBackGetData = this.callBackGetData.bind(this);
+        this.selectInstrument = this.selectInstrument.bind(this);
+
     }
 
     setCalib() {
@@ -26,6 +31,13 @@ class App extends React.Component {
       this.setState(
         {page: pageNum}
       )
+    }
+    
+    selectInstrument(name) {
+      const newInstrument = instruments(name, 0, 100, 0, 100);
+      this.setState({
+        currentInstrument: newInstrument
+      })
     }
 
     offsetFun() {
@@ -51,7 +63,7 @@ class App extends React.Component {
               <div className='cameraView'>
                   <Camera calib={this.state.calib} callBack={this.callBackGetData}/>
               </div>
-              <button className="calibButton" onClick={() => this.offsetFun()}> Calibrate < /button>
+              <button className="calibButton" onClick={() => this.offsetFun()}> Calibrate </button>
           </div>;
         }
         if (this.state.page==2) {
@@ -76,15 +88,15 @@ class App extends React.Component {
                       <p>Settings</p>
                     </div>
 
+                    <Menu instruments={instrumentTemplate} selectInstrument={this.selectInstrument} />
                 </div>
                 <div className="right">
                   {pageHtml}
                 </div>
 
             </div>
-    )
-    ;
-    }
+        );
+      }
     }
 
     export default App;
