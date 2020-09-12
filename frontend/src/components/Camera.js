@@ -177,7 +177,7 @@ class PoseNet extends Component {
         }
       });
 
-      if(this.props.isHero && this.props.currentInstrument != null) {
+      if(this.props.isHero && this.props.currentInstrument?.name === "xylophone") {
 
         // if this is the beginning of the song, add first note
         if (PoseNet.backlogNotes.length == 0){
