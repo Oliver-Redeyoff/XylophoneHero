@@ -170,26 +170,55 @@ class PoseNet extends Component {
       if (this.props.currentInstrument != null) {
         const leftWrist = poses[0].keypoints[9].position;
         const rightWrist = poses[0].keypoints[10].position;
-        console.log(leftWrist);
-        console.log(rightWrist);
-        this.props.currentInstrument.boxes.forEach((ele) => {
-          //canvasContext.beginPath()
-          canvasContext.rect(ele.minX, ele.minY, ele.maxX, ele.maxY);
-          canvasContext.stroke();
-
-          if ((ele.minX <= leftWrist.x && ele.maxX >= leftWrist.x && ele.minY <= leftWrist.y && ele.maxY >= leftWrist.y) ||
-              (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y)) {
-
-                console.log(`Triggered ${ele}`);
-
-                if (!ele.played) {
-                  ele.effect();
-                  ele.played = true;
-                }
-            } else if (ele.played) {
-              ele.played = false;
+        // console.log(leftWrist);
+        // console.log(rightWrist);
+        console.log(this.props.currentInstrument.name)
+        if (this.props.currentInstrument.name === "guitar") {
+          this.props.currentInstrument.boxes.forEach(ele => {
+            canvasContext.rect(ele.minX, ele.minY, ele.maxX, ele.maxY);
+            canvasContext.stroke();
+          })
+          const boxes = this.props.currentInstrument.boxes;
+          if (boxes[0].minX <= leftWrist.x && boxes[0].maxX >= leftWrist.x && boxes[0].minY <= leftWrist.y && boxes[0].maxY >= leftWrist.y) {
+            if (!boxes[0].toggle) {
+              this.props.currentInstrument.boxes.slice(1).forEach((ele) => {
+                if (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y) {
+                    console.log(`Triggered ${ele}`);
+                    ele.effect();
+                  }
+              });
+              boxes[0].toggle = true;
             }
-        });
+          } else {
+            if (boxes[0].toggle) {
+              this.props.currentInstrument.boxes.slice(1).forEach((ele) => {
+                if (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y) {
+                    console.log(`Triggered ${ele}`);
+                    ele.effect();
+                  }
+              });
+              boxes[0].toggle = true;
+            }
+            boxes[0].toggle = false;
+          }
+        } else {
+          this.props.currentInstrument.boxes.forEach((ele) => {
+            //canvasContext.beginPath()
+            canvasContext.rect(ele.minX, ele.minY, ele.maxX, ele.maxY);
+            canvasContext.stroke();
+
+            if ((ele.minX <= leftWrist.x && ele.maxX >= leftWrist.x && ele.minY <= leftWrist.y && ele.maxY >= leftWrist.y) ||
+                (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y)) {
+                  console.log(`Triggered ${ele}`);
+                  if (!ele.played) {
+                    ele.effect();
+                    ele.played = true;
+                  }
+              } else if (ele.played) {
+                ele.played = false;
+              }
+          });
+      }
       }
       requestAnimationFrame(findPoseDetectionFrame);
     };
