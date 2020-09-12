@@ -11,7 +11,7 @@ function instruments(name, minX, maxX, minY, maxY) {
     const template = Object.create(instrumentTemplate[name]);
     template.boxes = template.genBoxes(template.numBoxes, minX, maxX, minY, maxY, sounds[name])
     delete template.genBoxes;
-    return template
+    return template;
 }
 
 function regularRectangleBoxes(numBoxes, minX, maxX, minY, maxY, sounds) {
@@ -30,6 +30,7 @@ function regularRectangleBoxes(numBoxes, minX, maxX, minY, maxY, sounds) {
             maxY: maxY,
             minX: newMinX,
             maxX: newMaxX,
+            played: false,
             effect: () => playSound(sound)
         });
     }

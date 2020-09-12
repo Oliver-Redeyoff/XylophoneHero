@@ -2,6 +2,7 @@ import {drawKeyPoints, drawSkeleton} from './utils'
 import React, {Component} from 'react'
 import * as posenet from '@tensorflow-models/posenet'
 
+
 class PoseNet extends Component {
   static defaultProps = {
     videoWidth: 900,
@@ -189,13 +190,24 @@ class PoseNet extends Component {
       if (this.props.currentInstrument != null) {
         const leftWrist = poses[0].keypoints[9].position;
         const rightWrist = poses[0].keypoints[10].position;
-        console.log(leftWrist);
+        // console.log(leftWrist);
+        console.log(this.props.currentInstrument.boxes)
         this.props.currentInstrument.boxes.forEach((ele) => {
+
+          //canvasContext.beginPath()
+          canvasContext.rect(ele.minX, ele.minY, ele.maxX, ele.maxY);
+          canvasContext.stroke();
+          
           if ((ele.minX <= leftWrist.x && ele.maxX >= leftWrist.x && ele.minY <= leftWrist.y && ele.maxY >= leftWrist.y) ||
               (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y)) {
                 console.log(`Triggered ${ele}`);
-                ele.effect();
-
+                console.log(ele.played);
+                if (!ele.played) {
+                  ele.effect();
+                  ele.played = true;
+                }
+            } else if (ele.played) {
+              ele.played = false;
             }
         });
       }
