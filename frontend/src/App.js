@@ -25,7 +25,7 @@ class App extends React.Component {
     }
 
     selectInstrument(name) {
-      const newInstrument = instruments(name, 0, 100, 0, 100);
+      const newInstrument = instruments(name, 0, 1000, 300, 400);
       this.setState({
         currentInstrument: newInstrument
       })
@@ -58,7 +58,7 @@ class App extends React.Component {
                 <div className="right">
                     <div className='cameraViewParent'>
                         <div className='cameraView'>
-                            <Camera calib={this.state.calib} callBack={this.callBackGetData}/>
+                            <Camera calib={this.state.calib} callBack={this.callBackGetData} currentInstrument={this.state.currentInstrument}/>
                         </div>
                     </div>
                 </div>
