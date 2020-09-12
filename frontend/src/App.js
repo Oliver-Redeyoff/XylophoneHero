@@ -10,6 +10,7 @@ function App() {
       <div className="header">
         <img src={icon} alt="Icon" />
         <h1>Xylophone Hero</h1>
+        <button className="calibButton">Calibrate</button>
       </div>
 
       <div className='cameraViewParent'>

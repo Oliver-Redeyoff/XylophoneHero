@@ -25,3 +25,7 @@
 .cameraView {
   display: inline-block;
 }
+
+.calibButton {
+  background-color: lightblue;
+}

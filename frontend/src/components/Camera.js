@@ -187,7 +187,7 @@ class PoseNet extends Component {
     return (
       <div>
         <div>
-          <video id="videoNoShow" playsInline ref={this.getVideo} style={{display: 'none'}} />
+          <video id="videoNoShow" playsInline ref={this.getVideo} style={{display: 'none', width: "100%"}} />
           <canvas className="webcam" ref={this.getCanvas} />
         </div>
       </div>
