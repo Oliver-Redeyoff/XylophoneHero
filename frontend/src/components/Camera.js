@@ -130,7 +130,7 @@ class PoseNet extends Component {
         flipHorizontal: true
       });
       poses.push(pose);
-    
+
 
       canvasContext.clearRect(0, 0, videoWidth, videoHeight);
 
@@ -176,16 +176,17 @@ class PoseNet extends Component {
           //canvasContext.beginPath()
           canvasContext.rect(ele.minX, ele.minY, ele.maxX, ele.maxY);
           canvasContext.stroke();
-          
+
           if ((ele.minX <= leftWrist.x && ele.maxX >= leftWrist.x && ele.minY <= leftWrist.y && ele.maxY >= leftWrist.y) ||
               (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y)) {
-                // console.log(`Triggered ${ele}`);
-                // console.log(ele.played);
-                if (true || !ele.played) {
+
+                console.log(`Triggered ${ele}`);
+
+                if (!ele.played) {
                   ele.effect();
                   ele.played = true;
                 }
-            } else if (false && ele.played) {
+            } else if (ele.played) {
               ele.played = false;
             }
         });
