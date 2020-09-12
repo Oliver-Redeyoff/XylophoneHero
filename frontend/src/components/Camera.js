@@ -50,7 +50,7 @@ class PoseNet extends Component {
     try {
       this.posenet = await posenet.load({
         architecture: 'ResNet50',
-        outputStride: 16,
+        outputStride: 32,
         quantBytes: 2
 
       });
