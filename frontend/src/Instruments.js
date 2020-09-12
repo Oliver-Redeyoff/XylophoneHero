@@ -1,6 +1,6 @@
 import sounds from './Assets/sounds/Sounds.js';
 
-const instrumentTemplate = {
+export const instrumentTemplate = {
     "xylophone": {
         numBoxes: 7,
         genBoxes: regularRectangleBoxes,
