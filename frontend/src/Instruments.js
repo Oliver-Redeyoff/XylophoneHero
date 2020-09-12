@@ -33,6 +33,7 @@ function regularRectangleBoxes(numBoxes, minX, maxX, minY, maxY, sounds) {
             sound: sound
         });
     }
+    return boxes;
 };
 
 export default instruments;
