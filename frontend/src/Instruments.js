@@ -30,10 +30,15 @@ function regularRectangleBoxes(numBoxes, minX, maxX, minY, maxY, sounds) {
             maxY: maxY,
             minX: newMinX,
             maxX: newMaxX,
-            sound: sound
+            effect: () => playSound(sound)
         });
     }
     return boxes;
 };
+
+function playSound(sound){
+    const audio = new Audio(sound);
+    audio.play();
+}
 
 export default instruments;
