@@ -24,6 +24,9 @@ class PoseNet extends Component {
 
   constructor(props) {
     super(props, PoseNet.defaultProps)
+    this.state = {
+      calib : this.props.calib
+    }
   }
 
   getCanvas = elem => {
@@ -155,6 +158,10 @@ class PoseNet extends Component {
         canvasContext.translate(-videoWidth, 0)
         canvasContext.drawImage(video, 0, 0, videoWidth, videoHeight)
         canvasContext.restore()
+      }
+
+      if(this.props.calib){
+        this.props.callBack(poses[0].keypoints);
       }
 
       poses.forEach(({score, keypoints}) => {
