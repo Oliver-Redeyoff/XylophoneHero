@@ -7,18 +7,20 @@ function App() {
   return (
     <div>
 
-      <div className="header">
+      <div className="left">
         <img src={icon} alt="Icon" />
         <h1>Xylophone Hero</h1>
         <button className="calibButton">Calibrate</button>
       </div>
 
-      <div className='cameraViewParent'>
-        <div className='cameraView'>
-          <Camera/>
+      <div className="right">
+        <div className='cameraViewParent'>
+          <div className='cameraView'>
+            <Camera/>
+          </div>
         </div>
       </div>
-      
+
     </div>
   );
 }

@@ -1,19 +1,30 @@
-.header {
-  height: 100px;
-  width: 100%;
-  border: 1px solid red;
+body {
+  background-color: rgb(242, 242, 242);
 }
 
-.header img {
+.left {
+  display: inline-block;
+  vertical-align: top;
+  height: 100vh;
+  background-color: white;
+  padding: 10px 20px;
+}
+
+.left img {
+  display: block;
   height: 60px;
-  margin-top: 20px;
-  display: inline-block;
 }
 
-.header h1 {
+.left h1 {
+  display: block;
+  transform: rotate(-90deg);
+  vertical-align: top;
+  margin: 10px 0px 0px 20px;
+}
+
+.right {
   display: inline-block;
-  vertical-align: center;
-  margin: 0px;
+  padding: 30px;
 }
 
 .cameraViewParent {
