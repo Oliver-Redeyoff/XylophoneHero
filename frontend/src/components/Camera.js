@@ -16,7 +16,7 @@ class PoseNet extends Component {
     minPartConfidence: 0.5,
     maxPoseDetections: 2,
     nmsRadius: 20,
-    outputStride: 16,
+    outputStride: 32,
     imageScaleFactor: 0.45,
     skeletonColor: '#ffadea',
     skeletonLineWidth: 6,
@@ -48,8 +48,14 @@ class PoseNet extends Component {
     }
 
     try {
-      this.posenet = await posenet.load();
+      this.posenet = await posenet.load({
+        architecture: 'ResNet50',
+        outputStride: 16,
+        quantBytes: 2
+
+      });
     } catch (error) {
+      console.log(error)
       throw new Error('PoseNet failed to load');
     } finally {
       setTimeout(() => {
@@ -103,14 +109,8 @@ class PoseNet extends Component {
 
   poseDetectionFrame(canvasContext) {
     const {
-      algorithm,
-      imageScaleFactor,
-      flipHorizontal,
-      outputStride,
       minPoseConfidence,
       minPartConfidence,
-      maxPoseDetections,
-      nmsRadius,
       videoWidth,
       videoHeight,
       showVideo,
@@ -125,33 +125,14 @@ class PoseNet extends Component {
 
     const findPoseDetectionFrame = async () => {
       let poses = [];
+      const pose = await posenetModel.estimateSinglePose(this.video, {
+        video: true,
+        flipHorizontal: true
+      });
+      poses.push(pose);
+    
 
-      switch (algorithm) {
-        case 'multi-pose': {
-          poses = await posenetModel.estimateMultiplePoses(
-          video,
-          imageScaleFactor,
-          flipHorizontal,
-          outputStride,
-          maxPoseDetections,
-          minPartConfidence,
-          nmsRadius
-          )
-          break
-        }
-        case 'single-pose': {
-          const pose = await posenetModel.estimateSinglePose(
-          video,
-          imageScaleFactor,
-          flipHorizontal,
-          outputStride
-          )
-          poses.push(pose)
-          break
-        }
-      }
-
-      canvasContext.clearRect(0, 0, videoWidth, videoHeight)
+      canvasContext.clearRect(0, 0, videoWidth, videoHeight);
 
       if (showVideo) {
         canvasContext.save();
@@ -173,7 +154,7 @@ class PoseNet extends Component {
               minPartConfidence,
               skeletonColor,
               canvasContext
-            )
+            );
           }
           if (showSkeleton) {
             drawSkeleton(
@@ -182,38 +163,36 @@ class PoseNet extends Component {
               skeletonColor,
               skeletonLineWidth,
               canvasContext
-            )
+            );
           }
         }
       });
-      // console.log(poses);
       if (this.props.currentInstrument != null) {
         const leftWrist = poses[0].keypoints[9].position;
         const rightWrist = poses[0].keypoints[10].position;
-        // console.log(leftWrist);
-        console.log(this.props.currentInstrument.boxes)
+        console.log(leftWrist);
+        console.log(rightWrist);
         this.props.currentInstrument.boxes.forEach((ele) => {
-
           //canvasContext.beginPath()
           canvasContext.rect(ele.minX, ele.minY, ele.maxX, ele.maxY);
           canvasContext.stroke();
           
           if ((ele.minX <= leftWrist.x && ele.maxX >= leftWrist.x && ele.minY <= leftWrist.y && ele.maxY >= leftWrist.y) ||
               (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y)) {
-                console.log(`Triggered ${ele}`);
-                console.log(ele.played);
-                if (!ele.played) {
+                // console.log(`Triggered ${ele}`);
+                // console.log(ele.played);
+                if (true || !ele.played) {
                   ele.effect();
                   ele.played = true;
                 }
-            } else if (ele.played) {
+            } else if (false && ele.played) {
               ele.played = false;
             }
         });
       }
       requestAnimationFrame(findPoseDetectionFrame);
     };
-    findPoseDetectionFrame();
+    findPoseDetectionFrame()
   }
 
   render() {

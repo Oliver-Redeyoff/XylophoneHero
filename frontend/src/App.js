@@ -34,7 +34,7 @@ class App extends React.Component {
     }
     
     selectInstrument(name) {
-      const newInstrument = instruments(name, 0, 900, 375, 400);
+      const newInstrument = instruments(name, 0, 900, 375, 600);
       this.setState({
         currentInstrument: newInstrument
       })
