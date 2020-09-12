@@ -23,10 +23,10 @@ class PoseNet extends Component {
   }
 
   constructor(props) {
-    super(props, PoseNet.defaultProps)
+    super(props, PoseNet.defaultProps);
     this.state = {
       calib : this.props.calib
-    }
+    };
   }
 
   getCanvas = elem => {
@@ -39,7 +39,7 @@ class PoseNet extends Component {
 
   async componentDidMount() {
     try {
-      await this.setupCamera()
+      await this.setupCamera();
     } catch (error) {
       throw new Error(
         'This browser does not support video capture, or this device does not have a camera'
@@ -47,28 +47,28 @@ class PoseNet extends Component {
     }
 
     try {
-      this.posenet = await posenet.load()
+      this.posenet = await posenet.load();
     } catch (error) {
-      throw new Error('PoseNet failed to load')
+      throw new Error('PoseNet failed to load');
     } finally {
       setTimeout(() => {
-        this.setState({loading: false})
-      }, 200)
+        this.setState({loading: false});
+      }, 200);
     }
 
-    this.detectPose()
+    this.detectPose();
   }
 
   async setupCamera() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       throw new Error(
         'Browser API navigator.mediaDevices.getUserMedia not available'
-      )
+      );
     }
-    const {videoWidth, videoHeight} = this.props
-    const video = this.video
-    video.width = videoWidth
-    video.height = videoHeight
+    const {videoWidth, videoHeight} = this.props;
+    const video = this.video;
+    video.width = videoWidth;
+    video.height = videoHeight;
 
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: false,
@@ -79,7 +79,7 @@ class PoseNet extends Component {
       }
     })
 
-    video.srcObject = stream
+    video.srcObject = stream;
 
     return new Promise(resolve => {
       video.onloadedmetadata = () => {
@@ -90,12 +90,12 @@ class PoseNet extends Component {
   }
 
   detectPose() {
-    const {videoWidth, videoHeight} = this.props
-    const canvas = this.canvas
+    const {videoWidth, videoHeight} = this.props;
+    const canvas = this.canvas;
     const canvasContext = canvas.getContext('2d')
 
-    canvas.width = videoWidth
-    canvas.height = videoHeight
+    canvas.width = videoWidth;
+    canvas.height = videoHeight;
 
     this.poseDetectionFrame(canvasContext)
   }
@@ -117,13 +117,13 @@ class PoseNet extends Component {
       showSkeleton,
       skeletonColor,
       skeletonLineWidth
-      } = this.props
+      } = this.props;
 
-    const posenetModel = this.posenet
-    const video = this.video
+    const posenetModel = this.posenet;
+    const video = this.video;
 
     const findPoseDetectionFrame = async () => {
-      let poses = []
+      let poses = [];
 
       switch (algorithm) {
         case 'multi-pose': {
@@ -153,11 +153,11 @@ class PoseNet extends Component {
       canvasContext.clearRect(0, 0, videoWidth, videoHeight)
 
       if (showVideo) {
-        canvasContext.save()
-        canvasContext.scale(-1, 1)
-        canvasContext.translate(-videoWidth, 0)
-        canvasContext.drawImage(video, 0, 0, videoWidth, videoHeight)
-        canvasContext.restore()
+        canvasContext.save();
+        canvasContext.scale(-1, 1);
+        canvasContext.translate(-videoWidth, 0);
+        canvasContext.drawImage(video, 0, 0, videoWidth, videoHeight);
+        canvasContext.restore();
       }
 
       if(this.props.calib){
@@ -184,10 +184,24 @@ class PoseNet extends Component {
             )
           }
         }
-      })
-      requestAnimationFrame(findPoseDetectionFrame)
-    }
-    findPoseDetectionFrame()
+      });
+      // console.log(poses);
+      if (this.props.currentInstrument != null) {
+        const leftWrist = poses[0].keypoints[9].position;
+        const rightWrist = poses[0].keypoints[10].position;
+        console.log(leftWrist);
+        this.props.currentInstrument.boxes.forEach((ele) => {
+          if ((ele.minX <= leftWrist.x && ele.maxX >= leftWrist.x && ele.minY <= leftWrist.y && ele.maxY >= leftWrist.y) ||
+              (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y)) {
+                console.log(`Triggered ${ele}`);
+                ele.effect();
+
+            }
+        });
+      }
+      requestAnimationFrame(findPoseDetectionFrame);
+    };
+    findPoseDetectionFrame();
   }
 
   render() {
