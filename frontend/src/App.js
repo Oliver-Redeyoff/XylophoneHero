@@ -2,13 +2,16 @@ import React from 'react';
 import Camera from './components/Camera.js';
 import './App.css';
 import icon from './Assets/icon.png';
+import settingsIcon from './Assets/settingsIcon.png';
+import playIcon from './Assets/playIcon.png';
 
 // the vertical side bar was broken before I touched it - James
 class App extends React.Component {
     constructor(self) {
         super(self);
         this.state = {
-            calib: false
+            calib: false,
+            page: 1
         }
         this.callBackGetData = this.callBackGetData.bind(this);
     }
@@ -17,6 +20,12 @@ class App extends React.Component {
         this.setState(
             {calib: true}
         )
+    }
+
+    setPage(pageNum) {
+      this.setState(
+        {page: pageNum}
+      )
     }
 
     offsetFun() {
@@ -35,19 +44,41 @@ class App extends React.Component {
     }
 
     render() {
+        let pageHtml;
+        if (this.state.page == 1) {
+          pageHtml =
+          <div className='cameraViewParent'>
+              <div className='cameraView'>
+                  <Camera calib={this.state.calib} callBack={this.callBackGetData}/>
+              </div>
+              <button className="calibButton" onClick={() => this.offsetFun()}> Calibrate < /button>
+          </div>;
+        }
+        if (this.state.page==2) {
+          pageHtml =
+          <h1>This is settings</h1>;
+        }
+
         return (
             <div>
                 <div className="left">
-                    < img src={icon} alt="Icon"/>
-                    < h1> XylophoneHero < /h1>
-                        < button className="calibButton" onClick={() => this.offsetFun()}> Calibrate < /button>
+                    <img className="brandIcon" src={icon} alt="Icon"/>
+
+                    <hr />
+
+                    <div className="sidebarSection" onClick={() => this.setPage(1)}>
+                      <img className="iconBig" src={playIcon} alt="play"/>
+                      <p style={{marginTop: '-5px'}}>Main menu</p>
+                    </div>
+
+                    <div className="sidebarSection" onClick={() => this.setPage(2)}>
+                      <img src={settingsIcon} alt="settings"/>
+                      <p>Settings</p>
+                    </div>
+
                 </div>
                 <div className="right">
-                    <div className='cameraViewParent'>
-                        <div className='cameraView'>
-                            <Camera calib={this.state.calib} callBack={this.callBackGetData}/>
-                        </div>
-                    </div>
+                  {pageHtml}
                 </div>
 
             </div>
