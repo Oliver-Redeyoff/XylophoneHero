@@ -1,3 +1,5 @@
+import sounds from './Assets/sounds/Sounds.js';
+
 const instrumentTemplate = {
     "xylophone": {
         numBoxes: 7,
@@ -13,6 +15,9 @@ function instruments(name, minX, maxX, minY, maxY) {
 }
 
 function regularRectangleBoxes(numBoxes, minX, maxX, minY, maxY, sounds) {
+    if (sounds.length < numBoxes) {
+        throw `There aren't enough sounds (${sounds.length}) for the number of boxes (${numBoxes}) you kiddy fiddler`;
+    }
     const differenceX = maxX - minX;
     const width = differenceX / numBoxes;
     const boxes = [];
