@@ -4,6 +4,7 @@ import * as posenet from '@tensorflow-models/posenet'
 
 
 class PoseNet extends Component {
+
   static defaultProps = {
     videoWidth: 900,
     videoHeight: 600,
@@ -21,7 +22,15 @@ class PoseNet extends Component {
     skeletonColor: '#ffadea',
     skeletonLineWidth: 6,
     loadingText: 'Loading...please be patient...'
-  }
+  };
+
+  static songs = [
+    [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]]
+  ];
+  static timeCount = 0;
+  static timeDelay = 0;
+  static backlogNotes = [];
+  static currentNotes = [];
 
   constructor(props) {
     super(props, PoseNet.defaultProps);
@@ -167,6 +176,64 @@ class PoseNet extends Component {
           }
         }
       });
+
+      if(this.props.isHero && this.props.currentInstrument != null) {
+
+        // if this is the beginning of the song, add first note
+        if (PoseNet.backlogNotes.length == 0){
+
+          PoseNet.backlogNotes = PoseNet.songs[this.props.songId]
+
+          PoseNet.currentNotes.push(
+            {
+              id: PoseNet.backlogNotes[0][0],
+              x: this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].minX+10,
+              y: 0, //this.props.currentInstrument.boxes[PoseNet.songs[this.props.songId][0][0]].minY
+              width: this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].maxX-this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].minX-20,
+              height: 50
+            })
+
+          PoseNet.timeDelay = PoseNet.backlogNotes[0][1]*50;
+
+          console.log(PoseNet.backlogNotes);
+
+          PoseNet.backlogNotes = PoseNet.backlogNotes.slice(1, PoseNet.backlogNotes.length);
+
+          console.log(PoseNet.backlogNotes);
+
+        }
+
+        // check if a new note should be added
+        if (PoseNet.timeCount == PoseNet.timeDelay) {
+
+          PoseNet.currentNotes.push(
+            {
+              id: PoseNet.backlogNotes[0][0],
+              x: this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].minX+10,
+              y: 0, //this.props.currentInstrument.boxes[PoseNet.songs[this.props.songId][0][0]].minY
+              width: this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].maxX-this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].minX-20,
+              height: 50
+            })
+
+          PoseNet.timeDelay = PoseNet.backlogNotes[0][1]*50;
+
+          PoseNet.timeCount = 0;
+
+          PoseNet.backlogNotes = PoseNet.backlogNotes.slice(1, PoseNet.backlogNotes.length);
+
+        }
+
+
+        PoseNet.currentNotes.forEach((note) => {
+          canvasContext.rect(note.x, note.y, note.width, note.height);
+          canvasContext.stroke();
+          note.y += 5;
+        })
+
+        PoseNet.timeCount += 1;
+
+      }
+
       if (this.props.currentInstrument != null) {
         const leftWrist = poses[0].keypoints[9].position;
         const rightWrist = poses[0].keypoints[10].position;
@@ -220,7 +287,9 @@ class PoseNet extends Component {
           });
       }
       }
+
       requestAnimationFrame(findPoseDetectionFrame);
+
     };
     findPoseDetectionFrame()
   }

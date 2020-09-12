@@ -32,7 +32,7 @@ class App extends React.Component {
         {page: pageNum}
       )
     }
-    
+
     selectInstrument(name) {
       const newInstrument = instruments(name, 0, 900, 375, 600);
       this.setState({
@@ -61,7 +61,7 @@ class App extends React.Component {
           pageHtml =
           <div className='cameraViewParent'>
               <div className='cameraView'>
-                  <Camera calib={this.state.calib} callBack={this.callBackGetData} currentInstrument={this.state.currentInstrument}/>
+                  <Camera calib={this.state.calib} callBack={this.callBackGetData} currentInstrument={this.state.currentInstrument} isHero={true} songId={0}/>
               </div>
               <button className="calibButton" onClick={() => this.offsetFun()}> Calibrate </button>
           </div>;
