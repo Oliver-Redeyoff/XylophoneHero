@@ -31,6 +31,8 @@ class PoseNet extends Component {
   static timeDelay = 0;
   static backlogNotes = [];
   static currentNotes = [];
+  static score = 0;
+  static songFinished = false;
 
   constructor(props) {
     super(props, PoseNet.defaultProps);
@@ -177,10 +179,10 @@ class PoseNet extends Component {
         }
       });
 
-      if(this.props.isHero && this.props.currentInstrument?.name === "xylophone") {
+      if(this.props.isHero && this.props.currentInstrument?.name === "xylophone" && !PoseNet.songFinished) {
 
         // if this is the beginning of the song, add first note
-        if (PoseNet.backlogNotes.length == 0){
+        if (PoseNet.backlogNotes.length == 0 && PoseNet.currentNotes.length == 0){
 
           PoseNet.backlogNotes = PoseNet.songs[this.props.songId]
 
@@ -190,21 +192,22 @@ class PoseNet extends Component {
               x: this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].minX+10,
               y: 0, //this.props.currentInstrument.boxes[PoseNet.songs[this.props.songId][0][0]].minY
               width: this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].maxX-this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].minX-20,
-              height: 50
+              height: 50,
+              inBox: false,
+              isScored: false
             })
 
           PoseNet.timeDelay = PoseNet.backlogNotes[0][1]*50;
 
-          console.log(PoseNet.backlogNotes);
-
           PoseNet.backlogNotes = PoseNet.backlogNotes.slice(1, PoseNet.backlogNotes.length);
-
-          console.log(PoseNet.backlogNotes);
 
         }
 
+        console.log(PoseNet.backlogNotes);
+        console.log(PoseNet.currentNotes);
+
         // check if a new note should be added
-        if (PoseNet.timeCount == PoseNet.timeDelay) {
+        if (PoseNet.timeCount == PoseNet.timeDelay && PoseNet.backlogNotes.length != 0) {
 
           PoseNet.currentNotes.push(
             {
@@ -225,10 +228,30 @@ class PoseNet extends Component {
 
 
         PoseNet.currentNotes.forEach((note) => {
+
+          // if the note is in the box, check if the box is pressed
+          if(!note.isScored && note.y > this.props.currentInstrument.boxes[note.id].minY) {
+            note.inBox = true;
+            //PoseNet.score += 1;
+            //note.isScored = true;
+          } else {
+            note.inBox = false;
+          }
+
+          if(note.y > this.props.currentInstrument.boxes[note.id].maxY) {
+            PoseNet.currentNotes = PoseNet.currentNotes.slice(1, PoseNet.currentNotes.length);
+          }
+
           canvasContext.rect(note.x, note.y, note.width, note.height);
           canvasContext.stroke();
-          note.y += 5;
+          note.y += 10;
+
         })
+
+        if (PoseNet.backlogNotes.length == 0 && PoseNet.currentNotes.length == 0){
+          PoseNet.songFinished = true;
+          console.log("Score : " + PoseNet.score);
+        }
 
         PoseNet.timeCount += 1;
 
@@ -237,9 +260,6 @@ class PoseNet extends Component {
       if (this.props.currentInstrument != null) {
         const leftWrist = poses[0].keypoints[9].position;
         const rightWrist = poses[0].keypoints[10].position;
-        // console.log(leftWrist);
-        // console.log(rightWrist);
-        console.log(this.props.currentInstrument.name)
         if (this.props.currentInstrument.name === "guitar") {
           this.props.currentInstrument.boxes.forEach(ele => {
             canvasContext.rect(ele.minX, ele.minY, ele.maxX, ele.maxY);
@@ -250,7 +270,7 @@ class PoseNet extends Component {
             if (!boxes[0].toggle) {
               this.props.currentInstrument.boxes.slice(1).forEach((ele) => {
                 if (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y) {
-                    console.log(`Triggered ${ele}`);
+                    //console.log(`Triggered ${ele}`);
                     ele.effect();
                   }
               });
@@ -260,7 +280,7 @@ class PoseNet extends Component {
             if (boxes[0].toggle) {
               this.props.currentInstrument.boxes.slice(1).forEach((ele) => {
                 if (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y) {
-                    console.log(`Triggered ${ele}`);
+                    //console.log(`Triggered ${ele}`);
                     ele.effect();
                   }
               });
@@ -276,10 +296,18 @@ class PoseNet extends Component {
 
             if ((ele.minX <= leftWrist.x && ele.maxX >= leftWrist.x && ele.minY <= leftWrist.y && ele.maxY >= leftWrist.y) ||
                 (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y)) {
-                  console.log(`Triggered ${ele}`);
+                  //console.log(`Triggered ${ele}`);
                   if (!ele.played) {
                     ele.effect();
                     ele.played = true;
+
+                    PoseNet.currentNotes.forEach((note) => {
+                      if (note.inBox && !note.isScored) {
+                        PoseNet.score += 1;
+                        note.isScored = true;
+                      }
+                    })
+
                   }
               } else if (ele.played) {
                 ele.played = false;
