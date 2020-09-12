@@ -5,7 +5,7 @@ import * as posenet from '@tensorflow-models/posenet'
 class PoseNet extends Component {
   static defaultProps = {
     videoWidth: 900,
-    videoHeight: 700,
+    videoHeight: 600,
     flipHorizontal: true,
     algorithm: 'single-pose',
     showVideo: true,
@@ -16,7 +16,7 @@ class PoseNet extends Component {
     maxPoseDetections: 2,
     nmsRadius: 20,
     outputStride: 16,
-    imageScaleFactor: 0.5,
+    imageScaleFactor: 0.45,
     skeletonColor: '#ffadea',
     skeletonLineWidth: 6,
     loadingText: 'Loading...please be patient...'
@@ -100,20 +100,20 @@ class PoseNet extends Component {
   poseDetectionFrame(canvasContext) {
     const {
       algorithm,
-      imageScaleFactor, 
-      flipHorizontal, 
-      outputStride, 
-      minPoseConfidence, 
-      minPartConfidence, 
-      maxPoseDetections, 
-      nmsRadius, 
-      videoWidth, 
-      videoHeight, 
-      showVideo, 
-      showPoints, 
-      showSkeleton, 
-      skeletonColor, 
-      skeletonLineWidth 
+      imageScaleFactor,
+      flipHorizontal,
+      outputStride,
+      minPoseConfidence,
+      minPartConfidence,
+      maxPoseDetections,
+      nmsRadius,
+      videoWidth,
+      videoHeight,
+      showVideo,
+      showPoints,
+      showSkeleton,
+      skeletonColor,
+      skeletonLineWidth
       } = this.props
 
     const posenetModel = this.posenet
@@ -125,21 +125,21 @@ class PoseNet extends Component {
       switch (algorithm) {
         case 'multi-pose': {
           poses = await posenetModel.estimateMultiplePoses(
-          video, 
-          imageScaleFactor, 
-          flipHorizontal, 
-          outputStride, 
-          maxPoseDetections, 
-          minPartConfidence, 
+          video,
+          imageScaleFactor,
+          flipHorizontal,
+          outputStride,
+          maxPoseDetections,
+          minPartConfidence,
           nmsRadius
           )
           break
         }
         case 'single-pose': {
           const pose = await posenetModel.estimateSinglePose(
-          video, 
-          imageScaleFactor, 
-          flipHorizontal, 
+          video,
+          imageScaleFactor,
+          flipHorizontal,
           outputStride
           )
           poses.push(pose)
@@ -187,7 +187,7 @@ class PoseNet extends Component {
     return (
       <div>
         <div>
-          <video id="videoNoShow" playsInline ref={this.getVideo} />
+          <video id="videoNoShow" playsInline ref={this.getVideo} style={{display: 'none'}} />
           <canvas className="webcam" ref={this.getCanvas} />
         </div>
       </div>

@@ -1,11 +1,23 @@
 import React from 'react';
-import Camera from './components/Camera.js'
+import Camera from './components/Camera.js';
 import './App.css';
+import icon from './Assets/icon.png';
 
 function App() {
   return (
     <div>
-      <Camera/>
+
+      <div className="header">
+        <img src={icon} alt="Icon" />
+        <h1>Xylophone Hero</h1>
+      </div>
+
+      <div className='cameraViewParent'>
+        <div className='cameraView'>
+          <Camera/>
+        </div>
+      </div>
+      
     </div>
   );
 }
