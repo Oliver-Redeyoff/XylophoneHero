@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "bb4691cf017dc81c7c89c7a39e298dc5",
+    "revision": "49e3e53a6263c0d4ef14a14305c35c3c",
     "url": "/xylophoneHero/index.html"
   },
   {
-    "revision": "491403fc7938067d61bc",
+    "revision": "6180e23ef9c29982743a",
     "url": "/xylophoneHero/static/css/main.50302de0.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/xylophoneHero/static/js/2.da53da21.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "491403fc7938067d61bc",
-    "url": "/xylophoneHero/static/js/main.87bc25be.chunk.js"
+    "revision": "6180e23ef9c29982743a",
+    "url": "/xylophoneHero/static/js/main.a02e921c.chunk.js"
   },
   {
     "revision": "0d8e63aa945aaf517d2f",

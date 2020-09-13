@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/xylophoneHero/static/css/main.50302de0.chunk.css",
-    "main.js": "/xylophoneHero/static/js/main.87bc25be.chunk.js",
-    "main.js.map": "/xylophoneHero/static/js/main.87bc25be.chunk.js.map",
+    "main.js": "/xylophoneHero/static/js/main.a02e921c.chunk.js",
+    "main.js.map": "/xylophoneHero/static/js/main.a02e921c.chunk.js.map",
     "runtime-main.js": "/xylophoneHero/static/js/runtime-main.f44afea9.js",
     "runtime-main.js.map": "/xylophoneHero/static/js/runtime-main.f44afea9.js.map",
     "static/js/2.da53da21.chunk.js": "/xylophoneHero/static/js/2.da53da21.chunk.js",
     "static/js/2.da53da21.chunk.js.map": "/xylophoneHero/static/js/2.da53da21.chunk.js.map",
     "index.html": "/xylophoneHero/index.html",
-    "precache-manifest.3479bb5b1f0e5390aac39bcfd2186549.js": "/xylophoneHero/precache-manifest.3479bb5b1f0e5390aac39bcfd2186549.js",
+    "precache-manifest.c97716f7cc571f756084b125383b1e03.js": "/xylophoneHero/precache-manifest.c97716f7cc571f756084b125383b1e03.js",
     "service-worker.js": "/xylophoneHero/service-worker.js",
     "static/css/main.50302de0.chunk.css.map": "/xylophoneHero/static/css/main.50302de0.chunk.css.map",
     "static/js/2.da53da21.chunk.js.LICENSE.txt": "/xylophoneHero/static/js/2.da53da21.chunk.js.LICENSE.txt",
@@ -32,6 +32,6 @@
     "static/js/runtime-main.f44afea9.js",
     "static/js/2.da53da21.chunk.js",
     "static/css/main.50302de0.chunk.css",
-    "static/js/main.87bc25be.chunk.js"
+    "static/js/main.a02e921c.chunk.js"
   ]
 }
