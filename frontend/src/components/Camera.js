@@ -21,14 +21,15 @@ class PoseNet extends Component {
     imageScaleFactor: 0.45,
     skeletonColor: '#ffadea',
     skeletonLineWidth: 6,
-    loadingText: 'Loading...please be patient...'
+    loadingText: 'Loading...please be patient...',
   };
 
   static songs = [
     [[5, 1], [-1, 1], [0, 1], [2, 1], [-1, 1], [0, 1], [-1, 1], [5, 1], [3, 1], [3, 1], [3, 1]],
     [[5, 1], [5, 1], [5, 1], [2, 1], [-1, 1], [1, 1], [-1, 1], [0, 1], [-1, 1], [5, 1], [5, 1], [2, 1], [1, 1], [-1, 1], [0, 1]],
     [[5, 1], [5, 1], [3, 1], [1, 1], [-1, 1], [1, 1], [-1, 1], [4, 1], [-1, 1], [4, 1], [-1, 1], [4, 1], [6, 1], [6, 1], [0, 1], [1, 1]],
-    [[0, 1], [1, 1], [3, 1], [1, 1], [5, 1], [-1, 1], [6, 1], [-1, 1], [4, 1], [-1, 1], [0, 1], [1, 1], [3, 1], [1, 1], [4, 1], [-1, 1], [0, 1], [-1, 1], [2, -1]]
+    [[0, 1], [1, 1], [3, 1], [1, 1], [5, 1], [-1, 1], [6, 1], [-1, 1], [4, 1], [-1, 1], [0, 1], [1, 1], [3, 1], [1, 1], [4, 1], [-1, 1], [0, 1], [-1, 1], [2, -1]],
+    [[6, 1], [6, 1], [3, 1], [3, 1], [4, 1], [4, 1], [3, 1], [-1, 1], [2, 1], [2, 1], [1, 1], [1, 1], [0, 1], [0, 1], [6, 1], [-1, 1], [3, 1], [3, 1], [2, 1], [2, 1], [1, 1], [1, 1], [0, 1], [-1, 1], [3, 1], [3, 1], [2, 1], [2, 1], [1, 1], [1, 1], [0, 1], [-1, 1], [6, 1], [6, 1], [3, 1], [3, 1], [4, 1], [4, 1], [3, 1], [-1, 1], [2, 1], [2, 1], [1, 1], [1, 1], [0, 1], [0, 1], [6, 1], [-1, 1]]
 
 
   ];
@@ -40,11 +41,12 @@ class PoseNet extends Component {
   static songDone = -2;
 
   constructor(props) {
-    super(props, PoseNet.defaultProps);
+    super(props);
     this.state = {
       calib : this.props.calib,
       loading: true,
-      score: 0
+      score: 0,
+      modalName: this.props.modalName
     };
   }
 
@@ -54,6 +56,28 @@ class PoseNet extends Component {
 
   getVideo = elem => {
     this.video = elem
+  }
+
+  async componentDidUpdate(prevProps) {
+    if (this.props.modalName != prevProps.modalName) {
+      this.setState({modalName: this.props.modalName, loading: true})
+      try {
+        this.posenet = await posenet.load({
+          architecture: this.state.modalName,
+          outputStride: 16,
+          quantBytes: 2
+
+        });
+        console.log(`Current modal is ${this.state.modalName}`);
+      } catch (error) {
+        console.log(error)
+        throw new Error('PoseNet failed to load');
+      } finally {
+        setTimeout(() => {
+          this.setState({loading: false});
+        }, 200);
+      }
+    }
   }
 
   async componentDidMount() {
@@ -67,11 +91,12 @@ class PoseNet extends Component {
 
     try {
       this.posenet = await posenet.load({
-        architecture: 'ResNet50',
+        architecture: this.state.modalName,
         outputStride: 32,
         quantBytes: 2
 
       });
+      console.log(`Current modal is ${this.state.modalName}`);
     } catch (error) {
       console.log(error)
       throw new Error('PoseNet failed to load');
@@ -126,7 +151,7 @@ class PoseNet extends Component {
   }
 
   poseDetectionFrame(canvasContext) {
-    const {
+    let {
       minPoseConfidence,
       minPartConfidence,
       videoWidth,
@@ -137,11 +162,28 @@ class PoseNet extends Component {
       skeletonColor,
       skeletonLineWidth
       } = this.props;
-
+    //console.log(minPoseConfidence);
+    //console.log(this.props.minPoseConfidence);
     const posenetModel = this.posenet;
     const video = this.video;
 
     const findPoseDetectionFrame = async () => {
+      /*let {
+      minPoseConfidence,
+      minPartConfidence,
+      videoWidth,
+      videoHeight,
+      showVideo,
+      showPoints,
+      showSkeleton,
+      skeletonColor,
+      skeletonLineWidth
+      } = this.props;
+    //console.log(minPoseConfidence);
+    //console.log(this.props.minPoseConfidence);
+    const posenetModel = this.posenet;
+    const video = this.video;*/
+
       let poses = [];
       const pose = await posenetModel.estimateSinglePose(this.video, {
         video: true,
@@ -165,6 +207,7 @@ class PoseNet extends Component {
       }
 
       poses.forEach(({score, keypoints}) => {
+        //console.log(this.props.minPoseConfidence);
         if (score >= minPoseConfidence) {
           if (showPoints) {
             drawKeyPoints(
@@ -214,7 +257,7 @@ class PoseNet extends Component {
 
         }
 
-        console.log(PoseNet.backlogNotes[0]);
+        //console.log(PoseNet.backlogNotes[0]);
         //console.log(PoseNet.currentNotes);
 
         // check if a new note should be added
