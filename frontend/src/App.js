@@ -22,7 +22,8 @@ class App extends React.Component {
             minPartConfidence: 0.5,
             maxPoseDetections: 2,
             outputStride: 32,
-            imageScaleFactor: 0.45
+            imageScaleFactor: 0.45,
+            modalName: 'ResNet50',
         }
         this.selectInstrument = this.selectInstrument.bind(this);
 
@@ -74,6 +75,10 @@ class App extends React.Component {
 
     }
 
+    changeModal(modalName) {
+        this.setState({modalName: modalName});
+        console.log(modalName);
+    }
 
     render() {
         let pageHtml;
@@ -82,7 +87,7 @@ class App extends React.Component {
           <div>
           <div className='cameraViewParent'>
               <div className='cameraView'>
-                  <Camera currentInstrument={this.state.currentInstrument} isHero={this.state.isHero} songId={this.state.songID}/>
+                  <Camera currentInstrument={this.state.currentInstrument} isHero={this.state.isHero} songId={this.state.songID} modalName={this.state.modalName}/>
               </div>
 
               
@@ -107,7 +112,7 @@ class App extends React.Component {
           <div>
           <div className='cameraViewParent'>
               <div className='cameraView'>
-                  <Camera currentInstrument={this.state.currentInstrument} isHero={this.state.isHero} songId={this.state.songID}/>
+                  <Camera currentInstrument={this.state.currentInstrument} isHero={this.state.isHero} songId={this.state.songID} modalName={this.state.modalName}/>
               </div>
               </div>
 
@@ -127,16 +132,23 @@ class App extends React.Component {
             
             <text className="settingsText">imageScaleFactor</text> 
             <input className="settingsInput" type="range" min="0.2" max="1" value="0.45" step="0.01" required/>
-          
+
+            <text className="settingsText">Model</text>
+            <input className="settingsInput" type="radio" name="model" value='ResNet50' onChange={() => {this.changeModal('ResNet50')}}/>
+            <label for="ResNet50">ResNet (use for the best accuracy)</label>
+            <input className="settingsInput" type="radio" name="model" value='MobileNetV1' onChange={() => {this.changeModal('MobileNetV1')}}/>
+            <label for="MobileNetV1">MobileNet (use for the best fps)</label>
+            
           </div>
           </div>;
 
         }if (this.state.page==3) {
+            console.log(this.state);
           pageHtml =
           <div>
           <div className='cameraViewParent'>
               <div className='cameraView'>
-                  <Camera currentInstrument={this.state.currentInstrument} isHero={this.state.isHero} songId={this.state.songID}/>
+                  <Camera currentInstrument={this.state.currentInstrument} isHero={this.state.isHero} songId={this.state.songID} modalName={this.state.modalName}/>
               </div>
 
               <div className='songButtons'>

@@ -21,7 +21,7 @@ class PoseNet extends Component {
     imageScaleFactor: 0.45,
     skeletonColor: '#ffadea',
     skeletonLineWidth: 6,
-    loadingText: 'Loading...please be patient...'
+    loadingText: 'Loading...please be patient...',
   };
 
   static songs = [
@@ -40,10 +40,11 @@ class PoseNet extends Component {
   static songDone = -2;
 
   constructor(props) {
-    super(props, PoseNet.defaultProps);
+    super(props);
     this.state = {
       calib : this.props.calib,
-      loading: true
+      loading: true,
+      modalName: this.props.modalName
     };
   }
 
@@ -54,6 +55,36 @@ class PoseNet extends Component {
   getVideo = elem => {
     this.video = elem
   }
+
+  async componentDidUpdate(prevProps) {
+    if (this.props.modalName != prevProps.modalName) {
+      this.setState({modalName: this.props.modalName, loading: true})
+      try {
+        this.posenet = await posenet.load({
+          architecture: this.state.modalName,
+          outputStride: 16,
+          quantBytes: 2
+
+        });
+        console.log(`Current modal is ${this.state.modalName}`);
+      } catch (error) {
+        console.log(error)
+        throw new Error('PoseNet failed to load');
+      } finally {
+        setTimeout(() => {
+          this.setState({loading: false});
+        }, 200);
+      }
+    }
+  }
+
+  // componentWillReceiveProps(nextProps){
+  //   if(nextProps.someValue!==this.props.someValue){
+  //     //Perform some operation
+  //     this.setState({someState: someValue });
+  //     this.classMethod();
+  //   }
+  // }
 
   async componentDidMount() {
     try {
@@ -66,11 +97,12 @@ class PoseNet extends Component {
 
     try {
       this.posenet = await posenet.load({
-        architecture: 'ResNet50',
+        architecture: this.state.modalName,
         outputStride: 32,
         quantBytes: 2
 
       });
+      console.log(`Current modal is ${this.state.modalName}`);
     } catch (error) {
       console.log(error)
       throw new Error('PoseNet failed to load');
