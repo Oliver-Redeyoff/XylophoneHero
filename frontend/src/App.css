@@ -86,7 +86,7 @@ body {
 }
 
 .songButton {
-  display: block;
+  display: inline-block;
   color: darkorchid;
   padding-top:5px;
   padding-bottom:5px;
@@ -95,6 +95,7 @@ body {
 
 .songButtons {
   padding-left:30px;
+  text-align:center;
 }
 
 .settingsText {
