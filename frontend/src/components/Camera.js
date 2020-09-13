@@ -42,7 +42,8 @@ class PoseNet extends Component {
   constructor(props) {
     super(props, PoseNet.defaultProps);
     this.state = {
-      calib : this.props.calib
+      calib : this.props.calib,
+      loading: true
     };
   }
 
@@ -340,7 +341,8 @@ class PoseNet extends Component {
     return (
       <div>
         <div>
-          <video id="videoNoShow" playsInline ref={this.getVideo} style={{display: 'none', width: "100%"}} />
+          <h1 style={{visibility: this.state.loading ? 'visible' : 'hidden'}}>LOADKNG</h1>
+          <video id="videoNoShow" playsInline ref={this.getVideo} style={{display: 'none', width: "100%", visibility: this.state.loading ? 'hidden' : 'visible'}} />
           <canvas className="webcam" ref={this.getCanvas} />
         </div>
       </div>
