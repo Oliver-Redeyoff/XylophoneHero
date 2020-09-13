@@ -388,8 +388,10 @@ class PoseNet extends Component {
       <div>
         <div>
           { this.state.loading ?
-              <h1 style={{visibility: this.state.loading ? 'visible' : 'hidden'}}>LOADKNG</h1> :
-          <h1>score = {this.state.score}</h1>}
+              <h1>LOADING</h1> :
+              <div>
+              { this.props.isHero ? <h1 style={{ margin: 0}}>score: {this.state.score}</h1> : <></>}
+              </div>}
           <video id="videoNoShow" playsInline ref={this.getVideo} style={{display: 'none', width: "100%", visibility: this.state.loading ? 'hidden' : 'visible'}} />
           <canvas className="webcam" ref={this.getCanvas} />
         </div>

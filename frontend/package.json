@@ -6,7 +6,7 @@
   "dependencies": {
     "@tensorflow-models/posenet": "^2.0.0",
     "@tensorflow/tfjs": "^1.0.1",
-    "axios": "^0.15.3",
+    "axios": "^0.20.0",
     "compression": "^1.7.3",
     "connect-session-sequelize": "^4.1.0",
     "dat.gui": "^0.7.5",
