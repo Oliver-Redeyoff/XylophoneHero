@@ -43,7 +43,6 @@ class PoseNet extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      calib : this.props.calib,
       loading: true,
       score: 0,
       modalName: this.props.modalName
@@ -202,10 +201,6 @@ class PoseNet extends Component {
         canvasContext.restore();
       }
 
-      if(this.props.calib){
-        this.props.callBack(poses[0].keypoints);
-      }
-
       poses.forEach(({score, keypoints}) => {
         //console.log(this.props.minPoseConfidence);
         if (score >= minPoseConfidence) {
@@ -234,9 +229,8 @@ class PoseNet extends Component {
         // if this is the beginning of the song, add first note
         console.log(this.props.songId);
         if (PoseNet.backlogNotes.length == 0 && PoseNet.currentNotes.length == 0 && this.props.songId != -1){
+          this.setState({ score : 0 });
           PoseNet.backlogNotes = PoseNet.songs[this.props.songId]
-
-
 
           PoseNet.currentNotes.push(
             {
@@ -252,8 +246,6 @@ class PoseNet extends Component {
           PoseNet.timeDelay = PoseNet.backlogNotes[0][1]*30;
 
           PoseNet.backlogNotes = PoseNet.backlogNotes.slice(1, PoseNet.backlogNotes.length);
-
-
 
         }
 
