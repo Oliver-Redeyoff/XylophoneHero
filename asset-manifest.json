@@ -1,31 +1,37 @@
 {
   "files": {
-    "main.css": "/xylophoneHero/static/css/main.d552c7ab.chunk.css",
-    "main.js": "/xylophoneHero/static/js/main.09b054fa.chunk.js",
-    "main.js.map": "/xylophoneHero/static/js/main.09b054fa.chunk.js.map",
+    "main.css": "/xylophoneHero/static/css/main.aa7b19bc.chunk.css",
+    "main.js": "/xylophoneHero/static/js/main.ad7b063e.chunk.js",
+    "main.js.map": "/xylophoneHero/static/js/main.ad7b063e.chunk.js.map",
     "runtime-main.js": "/xylophoneHero/static/js/runtime-main.f44afea9.js",
     "runtime-main.js.map": "/xylophoneHero/static/js/runtime-main.f44afea9.js.map",
-    "static/js/2.199ba7d7.chunk.js": "/xylophoneHero/static/js/2.199ba7d7.chunk.js",
-    "static/js/2.199ba7d7.chunk.js.map": "/xylophoneHero/static/js/2.199ba7d7.chunk.js.map",
+    "static/js/2.92bcf153.chunk.js": "/xylophoneHero/static/js/2.92bcf153.chunk.js",
+    "static/js/2.92bcf153.chunk.js.map": "/xylophoneHero/static/js/2.92bcf153.chunk.js.map",
     "index.html": "/xylophoneHero/index.html",
-    "precache-manifest.b993e106b7a9e6e5e0870fe5e7a22ca2.js": "/xylophoneHero/precache-manifest.b993e106b7a9e6e5e0870fe5e7a22ca2.js",
+    "precache-manifest.acd7405ad20dce69e2bc78e51958b7b6.js": "/xylophoneHero/precache-manifest.acd7405ad20dce69e2bc78e51958b7b6.js",
     "service-worker.js": "/xylophoneHero/service-worker.js",
-    "static/css/main.d552c7ab.chunk.css.map": "/xylophoneHero/static/css/main.d552c7ab.chunk.css.map",
-    "static/js/2.199ba7d7.chunk.js.LICENSE.txt": "/xylophoneHero/static/js/2.199ba7d7.chunk.js.LICENSE.txt",
+    "static/css/main.aa7b19bc.chunk.css.map": "/xylophoneHero/static/css/main.aa7b19bc.chunk.css.map",
+    "static/js/2.92bcf153.chunk.js.LICENSE.txt": "/xylophoneHero/static/js/2.92bcf153.chunk.js.LICENSE.txt",
     "static/media/a.mp3": "/xylophoneHero/static/media/a.17dfe8a0.mp3",
     "static/media/b.mp3": "/xylophoneHero/static/media/b.8e904fb2.mp3",
-    "static/media/c.mp3": "/xylophoneHero/static/media/c.1b390bd9.mp3",
+    "static/media/c2.mp3": "/xylophoneHero/static/media/c2.9ceb1773.mp3",
+    "static/media/cmaj.mp3": "/xylophoneHero/static/media/cmaj.d8413b7c.mp3",
     "static/media/d1.mp3": "/xylophoneHero/static/media/d1.54811c53.mp3",
+    "static/media/dmaj.mp3": "/xylophoneHero/static/media/dmaj.4c473ec9.mp3",
     "static/media/e1.mp3": "/xylophoneHero/static/media/e1.73ef2d34.mp3",
+    "static/media/emin.mp3": "/xylophoneHero/static/media/emin.d4ca7018.mp3",
     "static/media/f.mp3": "/xylophoneHero/static/media/f.925726cd.mp3",
     "static/media/g.mp3": "/xylophoneHero/static/media/g.2fa9bbb6.mp3",
+    "static/media/gmaj.mp3": "/xylophoneHero/static/media/gmaj.4bd25b55.mp3",
+    "static/media/guitarbutton.png": "/xylophoneHero/static/media/guitarbutton.1f9d815a.png",
     "static/media/icon.png": "/xylophoneHero/static/media/icon.21cb9c8c.png",
-    "static/media/settingsIcon.png": "/xylophoneHero/static/media/settingsIcon.8d63b82e.png"
+    "static/media/settingsIcon.png": "/xylophoneHero/static/media/settingsIcon.8d63b82e.png",
+    "static/media/xylobutton.png": "/xylophoneHero/static/media/xylobutton.1fbf229f.png"
   },
   "entrypoints": [
     "static/js/runtime-main.f44afea9.js",
-    "static/js/2.199ba7d7.chunk.js",
-    "static/css/main.d552c7ab.chunk.css",
-    "static/js/main.09b054fa.chunk.js"
+    "static/js/2.92bcf153.chunk.js",
+    "static/css/main.aa7b19bc.chunk.css",
+    "static/js/main.ad7b063e.chunk.js"
   ]
 }

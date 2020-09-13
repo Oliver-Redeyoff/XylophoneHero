@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/xylophoneHero/precache-manifest.b993e106b7a9e6e5e0870fe5e7a22ca2.js"
+  "/xylophoneHero/precache-manifest.acd7405ad20dce69e2bc78e51958b7b6.js"
 );
 
 self.addEventListener('message', (event) => {
