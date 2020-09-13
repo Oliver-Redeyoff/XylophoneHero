@@ -43,7 +43,8 @@ class PoseNet extends Component {
     super(props, PoseNet.defaultProps);
     this.state = {
       calib : this.props.calib,
-      loading: true
+      loading: true,
+      score: 0
     };
   }
 
@@ -241,7 +242,15 @@ class PoseNet extends Component {
         PoseNet.currentNotes.forEach((note) => {
 
           // if the note is in the box, check if the box is pressed
-          if(!note.isScored && note.y > this.props.currentInstrument.boxes[note.id].minY) {
+          console.log("note.x = ")
+          console.log(note.x)
+          console.log("box.minX = ")
+          console.log(this.props.currentInstrument.boxes[note.id].minX)
+          console.log("note.x + note.width = ")
+          console.log(note.x + note.width)
+          console.log("box.maxX = ")
+          console.log(this.props.currentInstrument.boxes[note.id].maxX)
+          if(!note.isScored && note.y > this.props.currentInstrument.boxes[note.id].minY && note.y < this.props.currentInstrument.boxes[note.id].maxY && note.x >= this.props.currentInstrument.boxes[note.id].minX && note.x + note.width <= this.props.currentInstrument.boxes[note.id].maxX) {
             note.inBox = true;
             //PoseNet.score += 1;
             //note.isScored = true;
@@ -315,10 +324,12 @@ class PoseNet extends Component {
                     }
 
                     PoseNet.currentNotes.forEach((note) => {
-                      if (note.inBox && !note.isScored) {
+                      if (note.inBox && !note.isScored && ((note.x <= ele.maxX && note.x+note.width >= ele.minX && note.y <= ele.maxY && note.y+note.height >= ele.minY) ||
+                          (note.x <= ele.maxX && note.x+note.width >= ele.minX && note.y <= ele.maxY && note.y >= ele.minY))) {
                         ele.effect();
                         ele.played = true;
                         PoseNet.score += 1;
+                        this.setState({ score: PoseNet.score })
                         note.isScored = true;
                       }
                     })
@@ -341,7 +352,9 @@ class PoseNet extends Component {
     return (
       <div>
         <div>
-          <h1 style={{visibility: this.state.loading ? 'visible' : 'hidden'}}>LOADKNG</h1>
+          { this.state.loading ?
+              <h1 style={{visibility: this.state.loading ? 'visible' : 'hidden'}}>LOADKNG</h1> :
+          <h1>score = {this.state.score}</h1>}
           <video id="videoNoShow" playsInline ref={this.getVideo} style={{display: 'none', width: "100%", visibility: this.state.loading ? 'hidden' : 'visible'}} />
           <canvas className="webcam" ref={this.getCanvas} />
         </div>
