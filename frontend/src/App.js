@@ -4,6 +4,8 @@ import './App.css';
 import icon from './Assets/icon.png';
 import settingsIcon from './Assets/settingsIcon.png';
 import playIcon from './Assets/playIcon.png';
+import xylobutton from './Assets/xylobutton.png';
+import guitarbutton from './Assets/guitarbutton.png';
 import Menu from './Menu.js';
 import instruments, {instrumentTemplate} from './Instruments.js';
 
@@ -68,7 +70,20 @@ class App extends React.Component {
         }
         if (this.state.page==2) {
           pageHtml =
-          <h1>This is settings</h1>;
+          <div className="buttons">
+          <center><button className="instrumentButtons">
+            <img src={xylobutton} alt="Xylophone Button" className="instrumentButtons" onClick={() => this.selectInstrument("xylophone")}/>
+            </button>
+
+          <button className="instrumentButtons">  
+            <img src={guitarbutton} alt="Guitar Button" className="instrumentButtons" onClick={() => this.selectInstrument("guitar")}/>
+            </button></center>
+
+            <center><button className="modeButtons">Freeplay</button>
+            <div class="divider"/>
+            <button className="modeButtons">Gamemode</button></center>
+            </div>;
+
         }
 
         return (
