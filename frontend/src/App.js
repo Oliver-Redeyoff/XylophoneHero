@@ -22,20 +22,22 @@ class App extends React.Component {
             minPartConfidence: 0.5,
             maxPoseDetections: 2,
             outputStride: 32,
-            imageScaleFactor: 0.45
+            imageScaleFactor: 0.45,
+            modalName: 'ResNet50',
         }
         this.selectInstrument = this.selectInstrument.bind(this);
 
     }
 
-    changeSettings(minPoseConfidence, minPartConfidence, maxPoseDetections, outputStride, imageScaleFactor) {
+    changeSettings() {
       this.setState(
-         {minPoseConfidence: minPoseConfidence,
-            minPartConfidence: minPartConfidence,
-            maxPoseDetections: maxPoseDetections,
-            outputStride: outputStride,
-            imageScaleFactor: imageScaleFactor
+         { minPoseConfidence: document.getElementById("minPose").value,
+            minPartConfidence: document.getElementById("minPart").value,
+            maxPoseDetections: document.getElementById("maxPose").value,
+            outputStride: document.getElementById("outStride").value,
+            imageScaleFactor: document.getElementById("scaleFac").value
           })
+      console.log(this.state.minPoseConfidence)
     }
 
     setPage(pageNum) {
@@ -74,6 +76,10 @@ class App extends React.Component {
 
     }
 
+    changeModal(modalName) {
+        this.setState({modalName: modalName});
+        console.log(modalName);
+    }
 
     render() {
         let pageHtml;
@@ -82,7 +88,7 @@ class App extends React.Component {
           <div>
             <div className='cameraViewParent'>
               <div className='cameraView'>
-                <Camera currentInstrument={this.state.currentInstrument} isHero={this.state.isHero} songId={this.state.songID}/>
+                <Camera currentInstrument={this.state.currentInstrument} isHero={this.state.isHero} songId={this.state.songID} modalName={this.state.modalName}/>
               </div>
             </div>
 
@@ -109,34 +115,51 @@ class App extends React.Component {
         if (this.state.page==2) {
           pageHtml =
           <div>
-
-            <Camera currentInstrument={this.state.currentInstrument} isHero={this.state.isHero} songId={this.state.songID}/>
-
-            <div className="settings">
-              <text className="settingsText">minPoseConfience</text>
-              <input id="minPose" className="settingsInput" type="range" min="0.01" max="0.99" step="0.01" value="0.1" required/>
-
-              <text className="settingsText">minPartConfidence</text>
-              <input className="settingsInput" type="range" min="0.01" max="0.99" step="0.01" value="0.5" required/>
-
-              <text className="settingsText">maxPoseDetections</text>
-              <input className="settingsInput" type="range" min="1" max="5" value="2" step="1" required/>
-
-              <text className="settingsText">outputStride 32 or 16</text>
-              <input className="settingsInput" type="range" min="16" max="32" value="32" step="16" required/>
-
-              <text className="settingsText">imageScaleFactor</text>
-              <input className="settingsInput" type="range" min="0.2" max="1" value="0.45" step="0.01" required/>
-
+          <div className='cameraViewParent'>
+              <div className='cameraView'>
+                  <Camera currentInstrument={this.state.currentInstrument} isHero={this.state.isHero} songId={this.state.songID} modalName={this.state.modalName} minPoseConfience={this.state.minPoseConfidence}/>
+              </div>
             </div>
+
+
+          <div className="settings">
+            <label className="settingsLabel">minPoseConfidence</label>
+            <input id="minPose" onChange={() => this.changeSettings()} className="settingsInput" type="range" min="0.01" max="0.99" step="0.01" defaultValue="0.2" required/>
+
+            <label className="settingsLabel">minPartConfidence</label>
+            <input id="minPart" onChange={() => this.changeSettings()} className="settingsInput" type="range" min="0.01" max="0.99" step="0.01" defaultValue="0.5" required/>
+
+            <label className="settingsLabel">maxPoseDetections</label>
+            <input id="maxPose" onChange={() => this.changeSettings()} className="settingsInput" type="range" min="1" max="5" defaultValue="2" step="1" required/>
+
+            <label className="settingsLabel">outputStride</label>
+            <input id="outStride" onChange={() => this.changeSettings()} className="settingsInput" type="range" min="16" max="32" defaultValue="32" step="16" required/>
+
+            <text className="settingsText">imageScaleFactor</text>
+            <input className="settingsInput" type="range" min="0.2" max="1" value="0.45" step="0.01" required/>
+
+            <text className="settingsText">Model</text>
+            <input className="settingsInput" type="radio" name="model" value='ResNet50' onChange={() => {this.changeModal('ResNet50')}}/>
+            <label for="ResNet50">ResNet (use for the best accuracy)</label>
+            <input className="settingsInput" type="radio" name="model" value='MobileNetV1' onChange={() => {this.changeModal('MobileNetV1')}}/>
+            <label for="MobileNetV1">MobileNet (use for the best fps)</label>
+
+            <label className="settingsLabel">imageScaleFactor</label>
+            <input id="scaleFac" onChange={() => this.changeSettings()} className="settingsInput" type="range" min="0.2" max="1" defaultValue="0.45" step="0.01" required/>
+
+          </div>
           </div>;
 
         }if (this.state.page==3) {
+            console.log(this.state);
           pageHtml =
           <div>
 
-            <Camera currentInstrument={this.state.currentInstrument} isHero={this.state.isHero} songId={this.state.songID}/>
-
+          <div className='cameraViewParent'>
+            <div className='cameraView'>
+              <Camera currentInstrument={this.state.currentInstrument} isHero={this.state.isHero} songId={this.state.songID} modalName={this.state.modalName}/>
+            </div>
+          </div>
             <div className='songButtons'>
               <button className='songButton' onClick={() => this.selectSong(0)}>Wii Theme Tune</button>
               <div className="divider"></div>
