@@ -133,6 +133,8 @@ class App extends React.Component {
             
             <text className="settingsText">imageScaleFactor</text> 
             <input className="settingsInput" type="range" min="0.2" max="1" value="0.45" step="0.01" required/>
+            </div>
+            <div className="settings">
 
             <text className="settingsText">Model</text>
             <input className="settingsInput" type="radio" name="model" value='ResNet50' onChange={() => {this.changeModal('ResNet50')}}/>
