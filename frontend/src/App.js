@@ -114,7 +114,7 @@ class App extends React.Component {
               
           <div className="settings">
             <text className="settingsText">minPoseConfience</text> 
-            <input id="minPose" className="settingsInput" onChange= type="range" min="0.01" max="0.99" step="0.01" value="0.1" required/>
+            <input id="minPose" className="settingsInput" type="range" min="0.01" max="0.99" step="0.01" value="0.1" required/>
             
             <text className="settingsText">minPartConfidence</text>
             <input className="settingsInput" type="range" min="0.01" max="0.99" step="0.01" value="0.5" required/>
@@ -122,8 +122,8 @@ class App extends React.Component {
             <text className="settingsText">maxPoseDetections</text>
             <input className="settingsInput" type="range" min="1" max="5" value="2" step="1" required/>
             
-            <text className="settingsText">outputStride 32, 16, or 8</text> 
-            <input className="settingsInput" type="range" min="8" max="32" value="32" step="1" required/>
+            <text className="settingsText">outputStride 32 or 16</text> 
+            <input className="settingsInput" type="range" min="16" max="32" value="32" step="16" required/>
             
             <text className="settingsText">imageScaleFactor</text> 
             <input className="settingsInput" type="range" min="0.2" max="1" value="0.45" step="0.01" required/>
