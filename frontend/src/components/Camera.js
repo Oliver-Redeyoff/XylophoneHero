@@ -340,11 +340,9 @@ class PoseNet extends Component {
   render() {
     return (
       <div>
-        <div>
-          <h1 style={{visibility: this.state.loading ? 'visible' : 'hidden'}}>LOADKNG</h1>
-          <video id="videoNoShow" playsInline ref={this.getVideo} style={{display: 'none', width: "100%", visibility: this.state.loading ? 'hidden' : 'visible'}} />
-          <canvas className="webcam" ref={this.getCanvas} />
-        </div>
+        <h1 className="videoLoading" style={{display: this.state.loading ? 'block' : 'none'}}>Loading</h1>
+        <video id="videoNoShow" playsInline ref={this.getVideo} style={{display: 'none'}} />
+        <canvas className="webcam" ref={this.getCanvas} />
       </div>
     )
   }

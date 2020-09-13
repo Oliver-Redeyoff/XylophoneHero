@@ -1,54 +1,39 @@
 body {
-  background-color: rgb(242, 242, 242);
+  background-color: rgb(233, 236, 243);
+  font-family: 'arial';
 }
 
-.left {
-  display: inline-block;
-  vertical-align: top;
-  height: 100vh;
-  background-color: white;
-  padding: 10px 20px;
-}
-
-.left .brandIcon {
-  display: block;
+.header {
   height: 60px;
-  margin-top: 20px;
+  background-color: white;
 }
 
-.left hr {
-  margin: 30px 0px 20px 0px;
-}
-
-.left .sidebarSection {
-  margin-bottom: 40px;
-  cursor: pointer;
-}
-
-.left .sidebarSection img {
-  display: block;
-  margin: auto;
-  height: 50px;
-  width: auto;
-  transition: transform 0.2s;
-}
-
-.left .sidebarSection:hover img {
-  transform: scale(1.1);
-}
-
-.left .sidebarSection p {
-  text-align: center;
-}
-
-.left .sidebarSection .iconBig {
-  height: 70px;
-  width: auto;
-}
-
-.right {
+.header img {
   display: inline-block;
-  padding: 30px;
+  height: 40px;
+  margin: 10px 20px 20px 10px;
+}
+
+.header h1 {
+  display: inline-block;
+  font-size: 20px;
+  margin-top: 17px;
+  vertical-align: top;
+}
+
+.content {
+  width: 70%;
+  margin-left: 15%;
+  border: 1px solid black;
+  padding: 30px 0px 50px 0px;
+}
+
+.content .videoLoading {
+  width: 100%;
+  padding: 15px 0px;
+  background-color: white;
+  text-align: center;
+  border-radius: 5px;
 }
 
 .cameraViewParent {
@@ -61,8 +46,14 @@ body {
   display: inline-block;
 }
 
-.calibButton {
-  background-color: lightblue;
+.menu {
+  padding: 15px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.menu button {
+  background-color: white;
 }
 
 .instrumentButtons {
@@ -73,18 +64,14 @@ body {
 }
 
 .modeButtons {
-  padding-left: 20px;
-  padding-right: 20px;
-  border-radius: 10px;
-  font-size: 16px;
-  border-color: pink;
-  color: darkorchid;
+  padding: 10px;
+  width: 30%;
+  border-radius: 2px;
+  font-size: 24px;
+  border: none;
+  border: 1px solid pink;
 }
 
-.buttons {
-  padding-left:50px;
-  padding-top:50px;
-}
 
 .divider{
     width:5px;
