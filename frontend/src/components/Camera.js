@@ -28,7 +28,8 @@ class PoseNet extends Component {
     [[5, 1], [-1, 1], [0, 1], [2, 1], [-1, 1], [0, 1], [-1, 1], [5, 1], [3, 1], [3, 1], [3, 1]],
     [[5, 1], [5, 1], [5, 1], [2, 1], [-1, 1], [1, 1], [-1, 1], [0, 1], [-1, 1], [5, 1], [5, 1], [2, 1], [1, 1], [-1, 1], [0, 1]],
     [[5, 1], [5, 1], [3, 1], [1, 1], [-1, 1], [1, 1], [-1, 1], [4, 1], [-1, 1], [4, 1], [-1, 1], [4, 1], [6, 1], [6, 1], [0, 1], [1, 1]],
-    [[0, 1], [1, 1], [3, 1], [1, 1], [5, 1], [-1, 1], [6, 1], [-1, 1], [4, 1], [-1, 1], [0, 1], [1, 1], [3, 1], [1, 1], [4, 1], [-1, 1], [0, 1], [-1, 1], [2, -1]]
+    [[0, 1], [1, 1], [3, 1], [1, 1], [5, 1], [-1, 1], [6, 1], [-1, 1], [4, 1], [-1, 1], [0, 1], [1, 1], [3, 1], [1, 1], [4, 1], [-1, 1], [0, 1], [-1, 1], [2, -1]],
+    [[6, 1], [6, 1], [3, 1], [3, 1], [4, 1], [4, 1], [3, 1], [-1, 1], [2, 1], [2, 1], [1, 1], [1, 1], [0, 1], [0, 1], [6, 1], [-1, 1], [3, 1], [3, 1], [2, 1], [2, 1], [1, 1], [1, 1], [0, 1], [-1, 1], [3, 1], [3, 1], [2, 1], [2, 1], [1, 1], [1, 1], [0, 1], [-1, 1], [6, 1], [6, 1], [3, 1], [3, 1], [4, 1], [4, 1], [3, 1], [-1, 1], [2, 1], [2, 1], [1, 1], [1, 1], [0, 1], [0, 1], [6, 1], [-1, 1]]
 
 
   ];
@@ -124,7 +125,7 @@ class PoseNet extends Component {
   }
 
   poseDetectionFrame(canvasContext) {
-    const {
+    let {
       minPoseConfidence,
       minPartConfidence,
       videoWidth,
@@ -135,11 +136,28 @@ class PoseNet extends Component {
       skeletonColor,
       skeletonLineWidth
       } = this.props;
-
+    //console.log(minPoseConfidence);
+    //console.log(this.props.minPoseConfidence);
     const posenetModel = this.posenet;
     const video = this.video;
 
     const findPoseDetectionFrame = async () => {
+      /*let {
+      minPoseConfidence,
+      minPartConfidence,
+      videoWidth,
+      videoHeight,
+      showVideo,
+      showPoints,
+      showSkeleton,
+      skeletonColor,
+      skeletonLineWidth
+      } = this.props;
+    //console.log(minPoseConfidence);
+    //console.log(this.props.minPoseConfidence);
+    const posenetModel = this.posenet;
+    const video = this.video;*/
+
       let poses = [];
       const pose = await posenetModel.estimateSinglePose(this.video, {
         video: true,
@@ -163,6 +181,7 @@ class PoseNet extends Component {
       }
 
       poses.forEach(({score, keypoints}) => {
+        //console.log(this.props.minPoseConfidence);
         if (score >= minPoseConfidence) {
           if (showPoints) {
             drawKeyPoints(
@@ -212,7 +231,7 @@ class PoseNet extends Component {
 
         }
 
-        console.log(PoseNet.backlogNotes[0]);
+        //console.log(PoseNet.backlogNotes[0]);
         //console.log(PoseNet.currentNotes);
 
         // check if a new note should be added
