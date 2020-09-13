@@ -4,6 +4,7 @@ import * as posenet from '@tensorflow-models/posenet'
 
 
 class PoseNet extends Component {
+
   static defaultProps = {
     videoWidth: 900,
     videoHeight: 600,
@@ -16,12 +17,22 @@ class PoseNet extends Component {
     minPartConfidence: 0.5,
     maxPoseDetections: 2,
     nmsRadius: 20,
-    outputStride: 16,
+    outputStride: 32,
     imageScaleFactor: 0.45,
     skeletonColor: '#ffadea',
     skeletonLineWidth: 6,
     loadingText: 'Loading...please be patient...'
-  }
+  };
+
+  static songs = [
+    [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]]
+  ];
+  static timeCount = 0;
+  static timeDelay = 0;
+  static backlogNotes = [];
+  static currentNotes = [];
+  static score = 0;
+  static songFinished = false;
 
   constructor(props) {
     super(props, PoseNet.defaultProps);
@@ -48,8 +59,14 @@ class PoseNet extends Component {
     }
 
     try {
-      this.posenet = await posenet.load();
+      this.posenet = await posenet.load({
+        architecture: 'ResNet50',
+        outputStride: 32,
+        quantBytes: 2
+
+      });
     } catch (error) {
+      console.log(error)
       throw new Error('PoseNet failed to load');
     } finally {
       setTimeout(() => {
@@ -103,14 +120,8 @@ class PoseNet extends Component {
 
   poseDetectionFrame(canvasContext) {
     const {
-      algorithm,
-      imageScaleFactor,
-      flipHorizontal,
-      outputStride,
       minPoseConfidence,
       minPartConfidence,
-      maxPoseDetections,
-      nmsRadius,
       videoWidth,
       videoHeight,
       showVideo,
@@ -125,33 +136,14 @@ class PoseNet extends Component {
 
     const findPoseDetectionFrame = async () => {
       let poses = [];
+      const pose = await posenetModel.estimateSinglePose(this.video, {
+        video: true,
+        flipHorizontal: true
+      });
+      poses.push(pose);
 
-      switch (algorithm) {
-        case 'multi-pose': {
-          poses = await posenetModel.estimateMultiplePoses(
-          video,
-          imageScaleFactor,
-          flipHorizontal,
-          outputStride,
-          maxPoseDetections,
-          minPartConfidence,
-          nmsRadius
-          )
-          break
-        }
-        case 'single-pose': {
-          const pose = await posenetModel.estimateSinglePose(
-          video,
-          imageScaleFactor,
-          flipHorizontal,
-          outputStride
-          )
-          poses.push(pose)
-          break
-        }
-      }
 
-      canvasContext.clearRect(0, 0, videoWidth, videoHeight)
+      canvasContext.clearRect(0, 0, videoWidth, videoHeight);
 
       if (showVideo) {
         canvasContext.save();
@@ -173,7 +165,7 @@ class PoseNet extends Component {
               minPartConfidence,
               skeletonColor,
               canvasContext
-            )
+            );
           }
           if (showSkeleton) {
             drawSkeleton(
@@ -182,38 +174,152 @@ class PoseNet extends Component {
               skeletonColor,
               skeletonLineWidth,
               canvasContext
-            )
+            );
           }
         }
       });
-      // console.log(poses);
+
+      if(this.props.isHero && this.props.currentInstrument?.name === "xylophone" && !PoseNet.songFinished) {
+
+        // if this is the beginning of the song, add first note
+        if (PoseNet.backlogNotes.length == 0 && PoseNet.currentNotes.length == 0){
+
+          PoseNet.backlogNotes = PoseNet.songs[this.props.songId]
+
+          PoseNet.currentNotes.push(
+            {
+              id: PoseNet.backlogNotes[0][0],
+              x: this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].minX+10,
+              y: 0, //this.props.currentInstrument.boxes[PoseNet.songs[this.props.songId][0][0]].minY
+              width: this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].maxX-this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].minX-20,
+              height: 50,
+              inBox: false,
+              isScored: false
+            })
+
+          PoseNet.timeDelay = PoseNet.backlogNotes[0][1]*50;
+
+          PoseNet.backlogNotes = PoseNet.backlogNotes.slice(1, PoseNet.backlogNotes.length);
+
+        }
+
+        console.log(PoseNet.backlogNotes);
+        console.log(PoseNet.currentNotes);
+
+        // check if a new note should be added
+        if (PoseNet.timeCount == PoseNet.timeDelay && PoseNet.backlogNotes.length != 0) {
+
+          PoseNet.currentNotes.push(
+            {
+              id: PoseNet.backlogNotes[0][0],
+              x: this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].minX+10,
+              y: 0, //this.props.currentInstrument.boxes[PoseNet.songs[this.props.songId][0][0]].minY
+              width: this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].maxX-this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].minX-20,
+              height: 50
+            })
+
+          PoseNet.timeDelay = PoseNet.backlogNotes[0][1]*50;
+
+          PoseNet.timeCount = 0;
+
+          PoseNet.backlogNotes = PoseNet.backlogNotes.slice(1, PoseNet.backlogNotes.length);
+
+        }
+
+
+        PoseNet.currentNotes.forEach((note) => {
+
+          // if the note is in the box, check if the box is pressed
+          if(!note.isScored && note.y > this.props.currentInstrument.boxes[note.id].minY) {
+            note.inBox = true;
+            //PoseNet.score += 1;
+            //note.isScored = true;
+          } else {
+            note.inBox = false;
+          }
+
+          if(note.y > this.props.currentInstrument.boxes[note.id].maxY) {
+            PoseNet.currentNotes = PoseNet.currentNotes.slice(1, PoseNet.currentNotes.length);
+          }
+
+          canvasContext.rect(note.x, note.y, note.width, note.height);
+          canvasContext.stroke();
+          note.y += 10;
+
+        })
+
+        if (PoseNet.backlogNotes.length == 0 && PoseNet.currentNotes.length == 0){
+          PoseNet.songFinished = true;
+          console.log("Score : " + PoseNet.score);
+        }
+
+        PoseNet.timeCount += 1;
+
+      }
+
       if (this.props.currentInstrument != null) {
         const leftWrist = poses[0].keypoints[9].position;
         const rightWrist = poses[0].keypoints[10].position;
-        // console.log(leftWrist);
-        console.log(this.props.currentInstrument.boxes)
-        this.props.currentInstrument.boxes.forEach((ele) => {
-
-          //canvasContext.beginPath()
-          canvasContext.rect(ele.minX, ele.minY, ele.maxX, ele.maxY);
-          canvasContext.stroke();
-          
-          if ((ele.minX <= leftWrist.x && ele.maxX >= leftWrist.x && ele.minY <= leftWrist.y && ele.maxY >= leftWrist.y) ||
-              (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y)) {
-                console.log(`Triggered ${ele}`);
-                console.log(ele.played);
-                if (!ele.played) {
-                  ele.effect();
-                  ele.played = true;
-                }
-            } else if (ele.played) {
-              ele.played = false;
+        if (this.props.currentInstrument.name === "guitar") {
+          this.props.currentInstrument.boxes.forEach(ele => {
+            canvasContext.rect(ele.minX, ele.minY, ele.maxX, ele.maxY);
+            canvasContext.stroke();
+          })
+          const boxes = this.props.currentInstrument.boxes;
+          if (boxes[0].minX <= leftWrist.x && boxes[0].maxX >= leftWrist.x && boxes[0].minY <= leftWrist.y && boxes[0].maxY >= leftWrist.y) {
+            if (!boxes[0].toggle) {
+              this.props.currentInstrument.boxes.slice(1).forEach((ele) => {
+                if (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y) {
+                    //console.log(`Triggered ${ele}`);
+                    ele.effect();
+                  }
+              });
+              boxes[0].toggle = true;
             }
-        });
+          } else {
+            if (boxes[0].toggle) {
+              this.props.currentInstrument.boxes.slice(1).forEach((ele) => {
+                if (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y) {
+                    //console.log(`Triggered ${ele}`);
+                    ele.effect();
+                  }
+              });
+              boxes[0].toggle = true;
+            }
+            boxes[0].toggle = false;
+          }
+        } else {
+          this.props.currentInstrument.boxes.forEach((ele) => {
+            //canvasContext.beginPath()
+            canvasContext.rect(ele.minX, ele.minY, ele.maxX, ele.maxY);
+            canvasContext.stroke();
+
+            if ((ele.minX <= leftWrist.x && ele.maxX >= leftWrist.x && ele.minY <= leftWrist.y && ele.maxY >= leftWrist.y) ||
+                (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y)) {
+                  //console.log(`Triggered ${ele}`);
+                  if (!ele.played) {
+                    ele.effect();
+                    ele.played = true;
+
+                    PoseNet.currentNotes.forEach((note) => {
+                      if (note.inBox && !note.isScored) {
+                        PoseNet.score += 1;
+                        note.isScored = true;
+                      }
+                    })
+
+                  }
+              } else if (ele.played) {
+                ele.played = false;
+              }
+          });
       }
+      }
+
       requestAnimationFrame(findPoseDetectionFrame);
+
     };
-    findPoseDetectionFrame();
+    findPoseDetectionFrame()
   }
 
   render() {

@@ -2,8 +2,9 @@
   "name": "xylophonehero",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://Oliver-Redeyoff.github.io/xylophoneHero",
   "dependencies": {
-    "@tensorflow-models/posenet": "^1.0.0",
+    "@tensorflow-models/posenet": "^2.0.0",
     "@tensorflow/tfjs": "^1.0.1",
     "axios": "^0.15.3",
     "compression": "^1.7.3",
@@ -34,7 +35,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -52,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "gh-pages": "^3.1.0",
     "react-scripts": "^3.4.3"
   }
 }

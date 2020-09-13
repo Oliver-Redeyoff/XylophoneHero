@@ -4,6 +4,12 @@ export const instrumentTemplate = {
     "xylophone": {
         numBoxes: 7,
         genBoxes: regularRectangleBoxes,
+        name: "xylophone"
+    },
+    "guitar": {
+        numBoxes: 7,
+        genBoxes: guitarBoxes,
+        name: "guitar"
     }
 };
 
@@ -12,6 +18,18 @@ function instruments(name, minX, maxX, minY, maxY) {
     template.boxes = template.genBoxes(template.numBoxes, minX, maxX, minY, maxY, sounds[name])
     delete template.genBoxes;
     return template;
+}
+
+function guitarBoxes(numBoxes, minX, maxX, minY, maxY, sounds) {
+    numBoxes += 2;
+    let boxes = (regularRectangleBoxes(numBoxes, minX, maxX, 0, 600, sounds));
+    boxes[2].minX = boxes[0].minX;
+    boxes = boxes.slice(2, numBoxes-2);
+    boxes[0].effect = () => {};
+    boxes[0].toggle = false;
+    boxes[0].minY = minY*6/5;
+    boxes[0].maxY = maxY;
+    return boxes;
 }
 
 function regularRectangleBoxes(numBoxes, minX, maxX, minY, maxY, sounds) {

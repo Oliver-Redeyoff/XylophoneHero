@@ -14,19 +14,11 @@ class App extends React.Component {
     constructor(self) {
         super(self);
         this.state = {
-            calib: false,
             currentInstrument: null,
             page: 1
         }
-        this.callBackGetData = this.callBackGetData.bind(this);
         this.selectInstrument = this.selectInstrument.bind(this);
 
-    }
-
-    setCalib() {
-        this.setState(
-            {calib: true}
-        )
     }
 
     setPage(pageNum) {
@@ -34,9 +26,9 @@ class App extends React.Component {
         {page: pageNum}
       )
     }
-    
+
     selectInstrument(name) {
-      const newInstrument = instruments(name, 0, 900, 375, 400);
+      const newInstrument = instruments(name, 0, 900, 375, 600);
       this.setState({
         currentInstrument: newInstrument
       })
@@ -47,15 +39,6 @@ class App extends React.Component {
 
     }
 
-    callBackGetData(data) {
-        data.forEach((part) => {
-            if (part.part === "leftWrist" || part.part === "rightWrist") {
-                console.log("x position = " + part.position.x)
-                console.log("y position = " + part.position.y)
-            }
-        })
-        this.setState({calib: false})
-    }
 
     render() {
         let pageHtml;
@@ -63,9 +46,8 @@ class App extends React.Component {
           pageHtml =
           <div className='cameraViewParent'>
               <div className='cameraView'>
-                  <Camera calib={this.state.calib} callBack={this.callBackGetData} currentInstrument={this.state.currentInstrument}/>
+                  <Camera currentInstrument={this.state.currentInstrument} isHero={true} songId={0}/>
               </div>
-              <button className="calibButton" onClick={() => this.offsetFun()}> Calibrate </button>
           </div>;
         }
         if (this.state.page==2) {
