@@ -25,14 +25,19 @@ class PoseNet extends Component {
   };
 
   static songs = [
-    [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]]
+    [[5, 1], [-1, 1], [0, 1], [2, 1], [-1, 1], [0, 1], [-1, 1], [5, 1], [3, 1], [3, 1], [3, 1]],
+    [[5, 1], [5, 1], [5, 1], [2, 1], [-1, 1], [1, 1], [-1, 1], [0, 1], [-1, 1], [5, 1], [5, 1], [2, 1], [1, 1], [-1, 1], [0, 1]],
+    [[5, 1], [5, 1], [3, 1], [1, 1], [-1, 1], [1, 1], [-1, 1], [4, 1], [-1, 1], [4, 1], [-1, 1], [4, 1], [6, 1], [6, 1], [0, 1], [1, 1]],
+    [[0, 1], [1, 1], [3, 1], [1, 1], [5, 1], [-1, 1], [6, 1], [-1, 1], [4, 1], [-1, 1], [0, 1], [1, 1], [3, 1], [1, 1], [4, 1], [-1, 1], [0, 1], [-1, 1], [2, -1]]
+
+
   ];
   static timeCount = 0;
   static timeDelay = 0;
   static backlogNotes = [];
   static currentNotes = [];
   static score = 0;
-  static songFinished = false;
+  static songDone = -2;
 
   constructor(props) {
     super(props, PoseNet.defaultProps);
@@ -179,12 +184,14 @@ class PoseNet extends Component {
         }
       });
 
-      if(this.props.isHero && this.props.currentInstrument?.name === "xylophone" && !PoseNet.songFinished) {
+      if(this.props.isHero && this.props.currentInstrument?.name === "xylophone" && PoseNet.songDone != this.props.songId) {
 
         // if this is the beginning of the song, add first note
-        if (PoseNet.backlogNotes.length == 0 && PoseNet.currentNotes.length == 0){
-
+        console.log(this.props.songId);
+        if (PoseNet.backlogNotes.length == 0 && PoseNet.currentNotes.length == 0 && this.props.songId != -1){
           PoseNet.backlogNotes = PoseNet.songs[this.props.songId]
+
+
 
           PoseNet.currentNotes.push(
             {
@@ -197,18 +204,20 @@ class PoseNet extends Component {
               isScored: false
             })
 
-          PoseNet.timeDelay = PoseNet.backlogNotes[0][1]*50;
+          PoseNet.timeDelay = PoseNet.backlogNotes[0][1]*30;
 
           PoseNet.backlogNotes = PoseNet.backlogNotes.slice(1, PoseNet.backlogNotes.length);
 
+
+
         }
 
-        console.log(PoseNet.backlogNotes);
-        console.log(PoseNet.currentNotes);
+        console.log(PoseNet.backlogNotes[0]);
+        //console.log(PoseNet.currentNotes);
 
         // check if a new note should be added
         if (PoseNet.timeCount == PoseNet.timeDelay && PoseNet.backlogNotes.length != 0) {
-
+          if(PoseNet.backlogNotes[0][0] != -1) {
           PoseNet.currentNotes.push(
             {
               id: PoseNet.backlogNotes[0][0],
@@ -217,8 +226,9 @@ class PoseNet extends Component {
               width: this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].maxX-this.props.currentInstrument.boxes[PoseNet.backlogNotes[0][0]].minX-20,
               height: 50
             })
+        }
 
-          PoseNet.timeDelay = PoseNet.backlogNotes[0][1]*50;
+          PoseNet.timeDelay = /*PoseNet.backlogNotes[0][1]*/ 7;
 
           PoseNet.timeCount = 0;
 
@@ -244,12 +254,12 @@ class PoseNet extends Component {
 
           canvasContext.rect(note.x, note.y, note.width, note.height);
           canvasContext.stroke();
-          note.y += 10;
+          note.y += 35;
 
         })
 
-        if (PoseNet.backlogNotes.length == 0 && PoseNet.currentNotes.length == 0){
-          PoseNet.songFinished = true;
+        if (PoseNet.backlogNotes.length == 0 && PoseNet.currentNotes.length == 0 && this.props.songId != -1){
+          PoseNet.songDone = this.props.songId;
           console.log("Score : " + PoseNet.score);
         }
 
@@ -298,11 +308,15 @@ class PoseNet extends Component {
                 (ele.minX <= rightWrist.x && ele.maxX >= rightWrist.x && ele.minY <= rightWrist.y && ele.maxY >= rightWrist.y)) {
                   //console.log(`Triggered ${ele}`);
                   if (!ele.played) {
-                    ele.effect();
-                    ele.played = true;
+                    if(!this.props.isHero) {
+                      ele.effect();
+                      ele.played = true;
+                    }
 
                     PoseNet.currentNotes.forEach((note) => {
                       if (note.inBox && !note.isScored) {
+                        ele.effect();
+                        ele.played = true;
                         PoseNet.score += 1;
                         note.isScored = true;
                       }

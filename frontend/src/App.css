@@ -78,7 +78,7 @@ body {
   border-radius: 10px;
   font-size: 16px;
   border-color: pink;
-  color: pink;
+  color: darkorchid;
 }
 
 .buttons {
@@ -88,6 +88,32 @@ body {
 
 .divider{
     width:5px;
+    height:5px;
     height:auto;
     display:inline-block;
+}
+
+.songSelection {
+  visibility: false;
+}
+
+.songButton {
+  display: block;
+  color: darkorchid;
+  padding-top:5px;
+  padding-bottom:5px;
+  font-size: 12px;
+}
+
+.songButtons {
+  padding-left:30px;
+}
+
+.settingsText {
+  padding-left:5px;
+  padding-right:5px;
+}
+
+.settings {
+  display:inline-block;
 }
